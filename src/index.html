@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>The Peepee Poopoo Man</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <div id="game-container">
+            <div id="timer">2:00</div>
+            <div id="board-count">Boards: 10</div>
+            <div id="dialog"></div>
+            <div id="mobile-controls">
+                <button class="mobile-button" id="forward">↑</button>
+                <button class="mobile-button" id="left">←</button>
+                <button class="mobile-button" id="backward">↓</button>
+                <button class="mobile-button" id="right">→</button>
+                <button class="mobile-button" id="turn-left">⟲</button>
+                <button class="mobile-button" id="turn-right">⟳</button>
+                <button class="mobile-button" id="board">Board</button>
+            </div>
+            <div id="start-screen">
+                <h1>The Peepee Poopoo Man</h1>
+                <p>Board up the house before time runs out!</p>
+                <button id="start-button">Start Game</button>
+            </div>
+            <div class="loading">Loading...</div>
+        </div>
+
+        <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "https://unpkg.com/three@0.150.0/build/three.modules.js",
+                    "three/addons/": "https://unpkg.com/three@0.150.0/examples/jsm/"
+                }
+            }
+        </script>
+
+        <script type="module" src="script.js"></script>
+    </body>
+</html>
