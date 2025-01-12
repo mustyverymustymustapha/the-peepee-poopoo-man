@@ -205,3 +205,118 @@ function onKeyDown(event) {
             break;
     }
 }
+
+function onKeyUp(event) {
+    switch (event.code) {
+        case 'ArrowUp':
+        case 'KeyW':
+            moveForward = false;
+            break;
+        case 'ArrowDown':
+        case 'KeyS':
+            moveBackward = false;
+            break;
+        case 'ArrowLeft':
+        case 'KeyA':
+            moveLeft = false;
+            break;
+        case 'ArrowRight':
+        case 'KeyD':
+            moveRight = false;
+            break;
+    }
+}
+
+function attemptBoarding() {
+    if (remainingBoards <= 0) return;
+
+    const raycaster = new THREE.Raycaster();
+    const direction = new THREE.Vector3();
+    camera.getWorldDirection(direction);
+    raycaster.set(camera.position, direction);
+
+    const intersects = raycaster.intersectObjects(windowsAndDoors);
+
+    if (intersects.length > 0 && intersects[0].distance < 3) {
+        const target = intersects[0].object;
+        if (!target.boarded) {
+            target.material.color.setHex(0x4d3319);
+            target.boarded = true;
+            remainingBoards--;
+            document.getElementById('board-count').textContent = `Boards: ${remainingBoards}`;
+            checkWinCondition();
+        }
+    }
+}
+
+function checkWinCondition() {
+    const allBoarded = windowsAndDoors.every(obj => obj.boarded);
+    if (allBoarded) {
+        showDialog("AHHH, I WILL GET YOU NEXT TIME!!");
+        gameOver = true;
+        canMove = false;
+    }
+}
+
+function showDialog(text) {
+    const dialog = document.getElementById('dialog');
+    dialog.textContent = text;
+    dialog.style.display = 'block';
+}
+
+function startTimer() {
+    let timeLeft = 120;
+    const timerElement = document.getElementById('timer');
+
+    const timerInterval = setInterval(() => {
+        if (gameOver) {
+            clearInterval(timerInterval);
+            return;
+        }
+
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            showDialog("I'M COMING!");
+            gameOver = true;
+            canMove = false;
+        }
+
+        timeLeft--;
+    }, 1000);
+}
+
+function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+function animate() {
+    if (gameOver) return;
+
+    requestAnimationFrame(animate);
+    const time = performance.now();
+    const delta = (time - prevTime) / 1000;
+
+    velocity.x -= velocity.x * 10.0 * delta;
+    velocity.z -= velocity.z * 10.0 * delta;
+    velocity.y -= velocity.y * 10.0 * delta;
+
+    direction.z = Number(moveForward) - Number(moveBackward);
+    direction.x = Number(moveLeft) - Number(moveRight);
+    direction.normalize();
+
+    if (moveForward || moveBackward) velocity.z -= direction.z * 400.0 * delta;
+    if (moveLeft || moveRight) velocity.x -= direction.x * 400.0 * delta;
+
+    controls.moveRight(-velocity.x * delta);
+    controls.moveForward(-velocity.z * delta);
+    controls.getObject().position.y += velocity.y * delta;
+
+    prevTime = time;
+    renderer.render(scene, camera);
+}
