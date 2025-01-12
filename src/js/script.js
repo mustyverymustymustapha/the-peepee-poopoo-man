@@ -182,22 +182,26 @@ function setupMobileControls() {
 
 function onKeyDown(event) {
     if (!canMove) return;
-
+    
     switch (event.code) {
-        case 'ArrowUp': case 'KeyW':
+        case 'ArrowUp':
+        case 'KeyW':
             moveForward = true;
             break;
-            case 'ArrowDown': case 'KeyS':
-                moveBackward = true;
-                break;
-                case 'ArrowLeft': case 'KeyA':
-                    moveLeft = true;
-                    break;
-                    case 'ArrowRight': case 'KeyD':
-                        moveRight = true;
-                        break;
-                        case 'KeyE':
-                            attemptBoarding();
-                            break;
+        case 'ArrowDown':
+        case 'KeyS':
+            moveBackward = true;
+            break;
+        case 'ArrowLeft':
+        case 'KeyA':
+            moveLeft = true;
+            break;
+        case 'ArrowRight':
+        case 'KeyD':
+            moveRight = true;
+            break;
+        case 'KeyE':
+            attemptBoarding();
+            break;
     }
 }
